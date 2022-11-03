@@ -1,7 +1,7 @@
 {
-  "name": "trader",
+  "name": "BBtrader",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bitget and Binance trading",
   "main": "index.js",
   "scripts": {
     "compile": "npx tsc;",
