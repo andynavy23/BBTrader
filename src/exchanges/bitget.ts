@@ -1,15 +1,7 @@
-import { config } from 'dotenv';
 import ccxt from 'ccxt';
 
-config();
-
 class Bitget extends ccxt.bitget {
-    constructor() {
-        const config = {
-            apiKey: process.env.BITGET_API_KEY,
-            secret: process.env.BITGET_API_SECRET,
-            password: process.env.BITGET_API_PASSWORD,
-        };
+    constructor(config: any) {
         super(config);
     }
 
