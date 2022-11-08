@@ -1,22 +1,16 @@
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-import { config } from 'dotenv';
-config();
+import axios from 'axios';
 
 export function getDifference(arr1: any, arr2: any): any {
-    const difference = arr1.filter((x) => !arr2.includes(x));
+    const difference = arr2.filter((x: any) => !arr1.includes(x));
     return difference;
 }
 
-export async function getGoogleSheet(symbol: string): Promise<any> {
-    const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_API_DOC_ID);
-    const creds = {
-        private_key: process.env.GOOGLE_SHEET_API_PRIVATE_KEY,
-        client_email: process.env.GOOGLE_SHEET_API_CLIENT_EMAIL,
-    };
-    const sheet_id =
-        symbol == 'ETH' ? process.env.GOOGLE_SHEET_API_ETH_SHEET_ID : process.env.GOOGLE_SHEET_API_BTC_SHEET_ID;
+export async function getGoogleSheet(symbol: string, config: any): Promise<any> {
+    const doc = new GoogleSpreadsheet(config['doc_id']);
+    const sheet_id = symbol == 'ETH' ? config['eth_sheet_id'] : config['btc_sheet_id'];
 
-    await doc.useServiceAccountAuth(creds);
+    await doc.useServiceAccountAuth(config['creds']);
     await doc.loadInfo();
     const sheet = doc.sheetsById[sheet_id];
     await sheet.loadCells('A1:A20');
@@ -40,4 +34,45 @@ export async function writeGoogleSheetData(sheet: any, new_data: any) {
         cell.value = JSON.stringify(new_data[i]);
     }
     await sheet.saveUpdatedCells();
+}
+
+function filterMinutesOrder(data: any, minutes: number): any {
+    const current_ts = Date.now();
+    const minutes_data = data.filter((item: any) => Math.abs(item['ts'] - current_ts) < 1000 * 60 * minutes);
+    return minutes_data;
+}
+
+export async function sendNotifyLineMessage(data: any, token: string) {
+    let message = 'Bitget 下單通知\n';
+    const minutes_data = filterMinutesOrder(data, 10);
+    minutes_data.forEach((item: any) => {
+        let side_status: string;
+        switch (item['side']) {
+            case 'open_short':
+                side_status = '開倉 做多';
+                break;
+            case 'open_long':
+                side_status = '開倉 做空';
+                break;
+            case 'close_short':
+                side_status = '平倉 做多';
+                break;
+            case 'close_long':
+                side_status = '平倉 做空';
+                break;
+        }
+        const tw_ts = parseInt(item['ts']) + 8 * 3600 * 1000;
+        message += `${item['symbol']} ${side_status} ${item['price']} \n`;
+        message += `時間:${new Date(tw_ts).toISOString()}\n\n`;
+    });
+    if (minutes_data.length == 0) return;
+
+    const url = 'https://notify-api.line.me/api/notify';
+    const payload = `message=${message}`;
+    const option = {
+        headers: {
+            authorization: 'Bearer ' + token,
+        },
+    };
+    await axios.post(url, payload, option);
 }
