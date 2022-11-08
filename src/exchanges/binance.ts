@@ -1,14 +1,7 @@
-import { config } from 'dotenv';
 import ccxt from 'ccxt';
 
-config();
-
 class Binance extends ccxt.binanceus {
-    constructor() {
-        const config = {
-            apiKey: process.env.BINANCE_API_KEY,
-            secret: process.env.BINANCE_API_SECRET,
-        };
+    constructor(config: any) {
         super(config);
     }
 
