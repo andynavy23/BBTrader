@@ -1,15 +1,26 @@
 import Bitget from './exchanges/bitget';
 import Binance from './exchanges/binance';
+import * as Utils from './utils';
+import { config } from 'dotenv';
+config();
 
 async function main() {
-    const exch_a = new Bitget();
-    const exch_b = new Binance();
+    const bitget = new Bitget();
+    const binance = new Binance();
 
-    const btc_data = exch_a.getOrderHistory('BTC', 20);
-    const eth_data = exch_a.getOrderHistory('ETH', 20);
+    async function process(symbol: string, exch_a: any, exch_b: any) {
+        const new_data = await exch_a.getOrderHistory(symbol);
+        const sheet = await Utils.getGoogleSheet(symbol);
+        const old_data = await Utils.readGoogleSheetData(sheet);
+        const diff_data = await Utils.getDifference(old_data, new_data);
+        if (diff_data.length > 0) {
+            // exch_b.startTrade(diff_data);
+            console.log('Start trading');
+            console.log(diff_data);
+        }
+    }
 
-    exch_b.startTrade(btc_data);
-    exch_b.startTrade(eth_data);
+    await process('ETH', bitget, binance);
 }
 
 (async () => {
