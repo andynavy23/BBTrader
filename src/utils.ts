@@ -49,16 +49,16 @@ export async function sendNotifyLineMessage(data: any, token: string) {
         let side_status: string;
         switch (item['side']) {
             case 'open_short':
-                side_status = '開倉 做多';
+                side_status = '開倉 空單';
                 break;
             case 'open_long':
-                side_status = '開倉 做空';
+                side_status = '開倉 多單';
                 break;
             case 'close_short':
-                side_status = '平倉 做多';
+                side_status = '平倉 空單';
                 break;
             case 'close_long':
-                side_status = '平倉 做空';
+                side_status = '平倉 多單';
                 break;
         }
         const tw_ts = parseInt(item['ts']) + 8 * 3600 * 1000;
