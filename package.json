@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "compile": "npx tsc",
+        "config": "node dist/config.js",
         "start": "node dist/app.js",
         "main": "node dist/main.js"
     },
