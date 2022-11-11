@@ -32,7 +32,7 @@ async function main() {
         const sheet = await Utils.getGoogleSheet(symbol, google_config);
         const old_data = await Utils.readGoogleSheetData(sheet);
         const diff_data = await Utils.getDifference(old_data, new_data);
-        console.log(diff_data);
+        // console.log(diff_data);
         if (diff_data.length > 0) {
             console.log('Start trading...');
             await Utils.sendNotifyLineMessage(diff_data, notify_token);
