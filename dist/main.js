@@ -43,7 +43,7 @@ const dotenv_1 = require("dotenv");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const bitget_config = {
-            apiKey: `bg_${process.env.BITGET_API_KEY}`,
+            apiKey: 'bg_59d763d0dedca01a9af1e349392a1422',
             secret: process.env.BITGET_API_SECRET,
             password: process.env.BITGET_API_PASSWORD,
         };
