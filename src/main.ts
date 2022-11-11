@@ -6,7 +6,7 @@ config();
 
 async function main() {
     const bitget_config = {
-        apiKey: 'bg_59d763d0dedca01a9af1e349392a1422',
+        apiKey: process.env.BITGET_API_KEY,
         secret: process.env.BITGET_API_SECRET,
         password: process.env.BITGET_API_PASSWORD,
     };
