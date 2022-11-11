@@ -43,7 +43,7 @@ const dotenv_1 = require("dotenv");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         const bitget_config = {
-            apiKey: process.env.BITGET_API_KEY,
+            apiKey: `bg_${process.env.BITGET_API_KEY}`,
             secret: process.env.BITGET_API_SECRET,
             password: process.env.BITGET_API_PASSWORD,
         };
@@ -69,7 +69,7 @@ function main() {
                 const sheet = yield Utils.getGoogleSheet(symbol, google_config);
                 const old_data = yield Utils.readGoogleSheetData(sheet);
                 const diff_data = yield Utils.getDifference(old_data, new_data);
-                console.log(diff_data);
+                // console.log(diff_data);
                 if (diff_data.length > 0) {
                     console.log('Start trading...');
                     yield Utils.sendNotifyLineMessage(diff_data, notify_token);
