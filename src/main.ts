@@ -34,7 +34,7 @@ async function main() {
         const diff_data = await Utils.getDifference(old_data, new_data);
         // console.log(diff_data);
         if (diff_data.length > 0) {
-            console.log('Start trading...');
+            console.log(`Start ${symbol} trading...`);
             await Utils.sendNotifyLineMessage(diff_data, notify_token);
             await Utils.writeGoogleSheetData(sheet, new_data);
         }
